@@ -25,7 +25,7 @@ scene.add(new THREE.HemisphereLight(0xf0d0d0, 0x101030));
 
 // models
 const gltf_loader = new GLTFLoader();
-const gltf = await gltf_loader.loadAsync('/models/spider.glb');
+const gltf = await gltf_loader.loadAsync('../models/spider.glb');
 console.log(gltf);
 scene.add(gltf.scene);
 
