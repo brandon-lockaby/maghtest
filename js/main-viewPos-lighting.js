@@ -44,7 +44,31 @@ class MaghMaterial extends THREE.ShaderMaterial {
 }
 scene.traverse(obj => {
     if(obj.material) {
-        obj.material = new MaghMaterial(obj.material.map);
+        obj.material.onBeforeCompile = (shader, renderer) => {
+            shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', `
+                            
+                #ifdef USE_MAP
+
+                    //vec4 sampledDiffuseColor = texture2D( map, vec2(gl_FragCoord) / 200.0 );
+                    vec4 sampledDiffuseColor = texture2D( map, vec2(vViewPosition.x, vViewPosition.y) / 2.0 );
+
+                    #ifdef DECODE_VIDEO_TEXTURE
+
+                        // inline sRGB decode (TODO: Remove this code when https://crbug.com/1256340 is solved)
+
+                        sampledDiffuseColor = vec4( mix( pow( sampledDiffuseColor.rgb * 0.9478672986 + vec3( 0.0521327014 ), vec3( 2.4 ) ), sampledDiffuseColor.rgb * 0.0773993808, vec3( lessThanEqual( sampledDiffuseColor.rgb, vec3( 0.04045 ) ) ) ), sampledDiffuseColor.w );
+
+                    #endif
+
+                    diffuseColor *= sampledDiffuseColor;
+
+                #endif
+
+            `);
+            console.log(shader.fragmentShader);
+            obj.material.needsUpdate = true;
+        };
+        //obj.material = new MaghMaterial(obj.material.emissiveMap);
     }
 });
 
