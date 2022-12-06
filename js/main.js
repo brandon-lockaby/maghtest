@@ -10,41 +10,24 @@ document.body.appendChild(renderer.domElement);
 
 // scene
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
 const controls = new OrbitControls(camera, renderer.domElement);
-camera.position.set(0, 5, 10);
-controls.target.set(0, 4, 0);
+camera.position.set(0, 5, 12);
+controls.target.set(0, 2, 0);
 controls.autoRotate = true;
 controls.enablePan = false;
 controls.update();
-scene.add(new THREE.HemisphereLight(0xf0d0d0, 0x101030, 4));
+//scene.add(new THREE.HemisphereLight(0xf0d0d0, 0x101030, 4));
 const gltf_loader = new GLTFLoader();
-const gltf = await gltf_loader.loadAsync('./models/spider.glb');
+const gltf = await gltf_loader.loadAsync('./models/foot.glb');
 console.log(gltf);
 scene.add(gltf.scene);
 
 // modifications
-class MaghMaterial extends THREE.ShaderMaterial {
-    constructor(map) {
-        super({
-            fragmentShader: `
-                uniform sampler2D map;
-            
-                void main() {
-                    gl_FragColor = texture2D(map, vec2(gl_FragCoord) / 200.0);
-                }
-            `
-        });
-        this.uniforms = {
-            map: {
-                value: map
-            }
-        };
-    }
-}
 scene.traverse(obj => {
-    if(obj.material) {
-        obj.material = new MaghMaterial(obj.material.map);
+    if(obj.material && obj.material.name == 'white') {
+        obj.material = new THREE.MeshNormalMaterial({});
+        obj.geometry.computeVertexNormals({flatShading: true, wireframe: true});
     }
 });
 
