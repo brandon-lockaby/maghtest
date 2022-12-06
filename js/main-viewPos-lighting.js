@@ -49,8 +49,8 @@ scene.traverse(obj => {
                             
                 #ifdef USE_MAP
 
-                    //vec4 sampledDiffuseColor = texture2D( map, vec2(gl_FragCoord) / 200.0 );
-                    vec4 sampledDiffuseColor = texture2D( map, vec2(vViewPosition.x, vViewPosition.y) / 2.0 );
+                    vec4 sampledDiffuseColor = texture2D( map, vec2(gl_FragCoord) / 200.0 );
+                    //vec4 sampledDiffuseColor = texture2D( map, vec2(vViewPosition.x, vViewPosition.y) / 2.0 );
 
                     #ifdef DECODE_VIDEO_TEXTURE
 
